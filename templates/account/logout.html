@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign Out" %}{% endblock %}
+{% block style %}
+<style>
+  body{
+    background-image: linear-gradient(to right, aqua, rgb(150, 68, 226), rgb(205, 43, 226)) ;
+  }
+  section{
+      margin-top: 30px;
+      height: 185px;
+      width: 400px;
+      border-radius: 20px;
+      background-color: aliceblue;
+    }
+    h1{
+      padding-top: 15px;
+      padding-bottom: 5px;
+      font-family: 'Open Sans', sans-serif;
+    }
+    .btn{
+      margin-top: 5px;
+      background-image: linear-gradient(to right, aqua, rgb(150, 68, 226), rgb(205, 43, 226)) ;
+      width: 50%;
+      font-size: 18px;
+      color: white;
+      border: 1px solid white;
+    }
+    p{
+      font-size: 20px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+<center><section>
+<h1>{% trans "Sign Out" %}</h1>
+
+<p>{% trans 'Are you sure you want to sign out?' %}</p>
+
+<form method="post" action="{% url 'account_logout' %}">
+  {% csrf_token %}
+  {% if redirect_field_value %}
+  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+  {% endif %}
+  <button type="submit" class="btn btn-danger">{% trans 'Sign Out' %}</button>
+</form>
+</section>
+</center>
+</div>
+
+{% endblock %}

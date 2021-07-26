@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+<style>
+    section{
+        height: 200px;
+        width: 400px;
+        margin-top: 200px;
+        margin-left: 375px;
+        text-align: center;
+    }
+    body{
+        background-image: url(../../static/images/bg3.jpg);
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .btn{
+        margin-top: 10px;
+        background-color: #236b32;
+        color: white;
+    }
+    .btn:hover{
+        color: white;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+<section>
+<h3>Name : {{user.first_name}} {{user.last_name}}</h2>
+<h3>Goal set : <span id="goal"></span></h2>
+<h3>Total calories consumed : <span id="total_calories"></span></h2>
+<form method="POST" action="/myplate_app/save_rec/">
+    {% csrf_token %}
+    <input type="hidden" name="user" id="user" value="{{ user.first_name }} {{user.last_name}}">
+    <input type="hidden" name="totalCalories" id="totalCalories">
+    <input type="hidden" name="goal_set" id="goal_set">
+    <button type="submit" class="btn">Check Previous Records</button>
+</form>
+</section>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    var goal = localStorage.getItem('goal_set');
+    var calories = localStorage.getItem('totalCalories');
+    document.getElementById("goal").innerHTML = goal;
+    document.getElementById("total_calories").innerHTML = calories;
+    $('#totalCalories').val(calories);
+    $('#goal_set').val(goal);
+</script>
+{% endblock %}

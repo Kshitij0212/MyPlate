@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+<style>
+    body{
+        background-image: linear-gradient(to right, aqua, rgb(150, 68, 226), rgb(205, 43, 226))
+    }
+    ul{
+        font-size: 18px;
+    }
+    .total{
+        display: inline;
+        font-size: 23px;
+        float: right;
+        margin-top: 15px;
+    }
+    .goal{
+        font-size: 23px;
+        margin-top: 15px;
+    }
+    .save{
+        background-color: #201585;
+        color: aliceblue;
+        font-size: 20px;
+    }
+    .save:hover{
+        color: aliceblue;
+    }
+    section{
+      margin-top: 15px;
+      border: 1px solid black;
+      border-radius: 20px;
+      background-color: white;
+      padding-right: 15px;
+      padding-left: 15px;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="container">
+<h3>Your selected food items are:</h1>
+<section>
+<div class="my-4">
+    <ul class="list-group" id="items">
+    </ul>
+    <p class="total">Total Calories : <span id="total_calories"></span></p>
+    <p class="goal">Goal : <span id="goal">{{goal}}</span></p>
+    <h3 id="compare"></h3>
+</div>
+<a href="{% url 'myplate_app:save_rec' %}" class="btn save">Save record</a>
+</section>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+var total_calories = 0;
+var sum = 0;
+for (item in cart) {
+    let name = cart[item][1];
+    let qty = cart[item][0];
+    let calories = cart[item][2];
+    sum = sum + qty;
+    total_calories = parseFloat(total_calories + qty * calories);
+    if(qty != 0){
+        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="btn btn-dark">${qty}</span>
+                </li>`
+        $('#items').append(mystr);
+    }
+}
+document.getElementById("total_calories").innerHTML = total_calories;
+
+var goal = parseFloat(document.getElementById("goal").innerHTML);
+
+if(goal > total_calories){
+    diff = parseFloat(goal - total_calories).toFixed(2);
+    str = `You are ${diff} calories away from reaching your goal.`
+    $('#compare').append(str);
+    document.getElementById("compare").style.color = "orange";
+}
+else if(goal == total_calories){
+    str = `Congratulations you have reached your goal..!! You consumed ${goal} calories.`
+    $('#compare').append(str);
+    document.getElementById("compare").style.color = "green";
+}
+else{
+    diff = parseFloat(total_calories - goal).toFixed(2);
+    str = `You exceeded your goal by ${diff} calories.`
+    $('#compare').append(str);
+    document.getElementById("compare").style.color = "red";
+}
+localStorage.setItem("totalCalories", total_calories);
+localStorage.setItem("goal_set", goal);
+
+</script>
+
+{% endblock %}
